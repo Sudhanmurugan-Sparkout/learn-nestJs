@@ -1,22 +1,21 @@
 import {
   Injectable,
   InternalServerErrorException,
-  ConflictException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Auth } from './auth.model';
 import * as argon from 'argon2';
-import { manualErrorHandling } from '../common/helper/manual-error-handling';
 import { JwtService } from '@nestjs/jwt';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { ConfigService } from '@nestjs/config';
+
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(Auth.name) private authModel: Model<Auth>,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
   async login(data) {
     const user = await this.authModel.findOne({ email: data.email });
@@ -32,23 +31,20 @@ export class AuthService {
   }
 
   async register(data) {
-    try {
+   
       const hasedPaswword = await argon.hash(data.password);
       const user = await this.authModel.create({
         ...data,
         password: hasedPaswword,
       });
       return user;
-    } catch (error) {
-      manualErrorHandling(error);
-    }
   }
 
   async createToken(data: any): Promise<string> {
     const payload = { email: data.email, id: data._id };
     return await this.jwtService.signAsync(payload, {
       expiresIn: '1h',
-      secret: process.env.JWT_SECRET,
+      secret: this.configService.get<string>('JWT_SECRET'),
     });
   }
 

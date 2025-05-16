@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
-@Controller('book')
+@Controller('api/vl/book')
 export class BookController {
 
-    constructor(private bookService: BookService) {}
+    constructor(private bookService: BookService , private readonly eventEmitter: EventEmitter2) {}
     @Get()
     getAllBook() {
         return 'This is a book';
@@ -18,7 +19,9 @@ export class BookController {
 
     @Post()
     async createBook(@Body () dto : CreateBookDto) {
-        return await this.bookService.create(dto);
+        const book = await this.bookService.create(dto);
+        this.eventEmitter.emit('book.created', book);
+        return book;    
     }
     
 }

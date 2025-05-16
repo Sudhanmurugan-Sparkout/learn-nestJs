@@ -6,7 +6,7 @@ export class RegisterAuthDto {
     
     @IsNotEmpty()
     @IsString()
-    @MaxLength(10, { message: 'Password is too long' })
+    @MaxLength(20, { message: 'Password is too long' })
     @MinLength(6 , { message: 'At least 6 characters required for password' })
     password: string;
 
