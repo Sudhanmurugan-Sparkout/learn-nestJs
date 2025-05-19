@@ -8,6 +8,8 @@ import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
 import * as dotenv from 'dotenv';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { GatewayModule } from './gateway/gateway.module';
+import { SocketModule } from './socket/socket.module';
 import * as Joi from 'joi';
 
 dotenv.config();
@@ -22,7 +24,7 @@ dotenv.config();
         JWT_EXPIRES_IN: Joi.string().required(),
       }),
     }
-  ), UserModule, BookModule,EventEmitterModule.forRoot()],
+  ), UserModule, BookModule,EventEmitterModule.forRoot(), SocketModule],
   controllers: [AppController],
   providers: [AppService],
 })

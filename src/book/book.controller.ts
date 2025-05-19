@@ -3,7 +3,7 @@ import { BookService } from './book.service';
 import { CreateBookDto } from './dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-@Controller('api/vl/book')
+@Controller('book')
 export class BookController {
 
     constructor(private bookService: BookService , private readonly eventEmitter: EventEmitter2) {}

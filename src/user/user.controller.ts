@@ -7,29 +7,30 @@ import {
   Param,
   Delete,
   UseGuards,
+  ConflictException,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/auth/auth.service';
-
+import { IsPositivePipe } from 'src/common/pipes/IsPositive.pipes';
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly authService: AuthService) {}
+  constructor(private readonly userService: UserService, private readonly authService: AuthService, private readonly IsPositivePipe: IsPositivePipe) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  //@UseGuards(AuthGuard('jwt'))
   @Get()
-  async findAll() {
+  async findAll(@Query('page', IsPositivePipe) page: number) {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, IsPositivePipe) {
     return await this.userService.findOne(id);
   }
 

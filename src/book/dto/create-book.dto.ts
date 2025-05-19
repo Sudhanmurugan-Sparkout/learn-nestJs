@@ -1,4 +1,5 @@
-import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsNumber, IsNotEmpty, IsDate } from 'class-validator';
 export class CreateBookDto {
     @IsNotEmpty()
     @IsString()
@@ -9,4 +10,9 @@ export class CreateBookDto {
     @IsNotEmpty()
     @IsNumber()
     price: number
+
+    @IsNotEmpty()
+    @IsDate()
+    @Type(() => Date)
+    publishedAt: Date;
 }
